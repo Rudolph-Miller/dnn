@@ -1,4 +1,5 @@
 import { rnorm, randomChoice, getMeanAndSD } from './util';
+import Unit from './unit';
 
 console.log(rnorm(10, 5));
 console.log(randomChoice([1, 2, 3], 2));
@@ -7,3 +8,5 @@ console.log(getMeanAndSD([
   { data: [2, 3, 4] },
   { data: [3, 4, 5] }
 ]));
+
+const unit = new Unit('INPUT');
