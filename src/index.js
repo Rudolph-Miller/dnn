@@ -1,5 +1,6 @@
 import { rnorm, randomChoice, getMeanAndSD } from './util';
 import Unit from './unit';
+import Connection from './connection';
 
 console.log(rnorm(10, 5));
 console.log(randomChoice([1, 2, 3], 2));
@@ -10,3 +11,4 @@ console.log(getMeanAndSD([
 ]));
 
 const unit = new Unit('INPUT');
+const connection = new Connection();
