@@ -117,9 +117,11 @@ export default class DNN {
       }
       weights.push(weightsSub);
     }
-    return {numOfUnits:this.numOfUnits,
+    return {
+      numOfUnits:this.numOfUnits,
       weights:weights,
       means:this.inputMeans,
-      sds:this.inputSDs};
+      sds:this.inputSDs
+    };
   }
 }
