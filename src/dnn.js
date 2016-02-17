@@ -95,4 +95,31 @@ export default class DNN {
       }
     }
   }
+
+  setLearningCoefficient(coefficient) {
+    this.learningCoefficient = coefficient;
+  }
+
+  setMiniBatchSize(size) {
+    this.miniBatchSize = size;
+  }
+
+  getModel() {
+    let weights = [];
+    for (let i = 0; i < this.connections.length; i++) {
+      let weightsSub = [];
+      for (let j = 0; j < this.connections[i].length; j++) {
+        let weightsSubSub = [];
+        for (let k = 0; k < this.connections[i][j].length; k++) {
+          weightsSubSub.push(this.connections[i][j][k].getWeight());
+        }
+        weightsSub.push(weightsSubSub);
+      }
+      weights.push(weightsSub);
+    }
+    return {numOfUnits:this.numOfUnits,
+      weights:weights,
+      means:this.inputMeans,
+      sds:this.inputSDs};
+  }
 }
