@@ -1,44 +1,44 @@
 import DNN from './dnn';
 import fs from 'fs';
 
-const dataFile = 'src/data.text'
+const dataFile = 'src/data.txt'
 
 // 下記のネットワーク構成とします。
 // 入力層: 4 ユニット
 // 中間層: 4, 4 ユニット
 // 出力層: 3 ユニット
-var dnn = new DNN({numOfUnits:[4, 4, 4, 3]});
+const dnn = new DNN({numOfUnits:[4, 4, 4, 3]});
 
 // 学習係数の設定
 dnn.setLearningCoefficient(0.001);
 
 // 学習データを読み込みます。
-var data = fs.readFileSync(dataFile, 'utf-8');
+const data = fs.readFileSync(dataFile, 'utf-8');
  
 // 改行で split します。データセットの取得先によって変わるかも。
-var lines = data.split('\n');
+const lines = data.split('\n');
 
 // 10-fold cross validation を行います。
 // 1 分割あたりのデータ数を計算
-var size = Math.floor(lines.length / 10);
+const size = Math.floor(lines.length / 10);
 
 // 全てのデータセット
-var allDataSets = [];
-var i = 0;
+let allDataSets = [];
+let i = 0;
  
 // 精度計算用
-var accuracySum = 0;
+let accuracySum = 0;
 // ループ
 while (1) {
   // データセット
-  var dataSets = [];
+  let dataSets = [];
  
   // 1 分割あたりのデータ数までを dataSets にセットします。
-  for (var j = 0; j < size; j++) {
+  for (let j = 0; j < size; j++) {
     if (i > lines.length - 1) {
       break;
     }
-    var ary = lines[i].split(' ');
+    let ary = lines[i].split(' ');
     dataSets.push(ary);
     i++;
   }
@@ -53,16 +53,16 @@ while (1) {
 }
  
 // 全データセット分ループ
-for (var i = 0; i < allDataSets.length; i++) {
+for (let i = 0; i < allDataSets.length; i++) {
  
   // 学習データとテストデータ
-  var trainData = [];
-  var testData = [];
+  let trainData = [];
+  let testData = [];
  
   // 再度全データセット分ループ
-  for (var j = 0; j < allDataSets.length; j++) {
+  for (let j = 0; j < allDataSets.length; j++) {
     // データセットをループ
-    for (var k = 0; k < allDataSets[j].length; k++) {
+    for (let k = 0; k < allDataSets[j].length; k++) {
       // テストデータを保存
       if (i == j) {
         testData.push(allDataSets[j][k]);
@@ -74,14 +74,14 @@ for (var i = 0; i < allDataSets.length; i++) {
   }
  
   // 誤差関数の出力が規定の値未満になるまで最大 10000 回ループします。
-  for (var l = 0; l < 10000; l++) {
+  for (let l = 0; l < 10000; l++) {
  
     // DNN に渡すデータ
-    var inputData = [];
-    for (var m = 0; m < trainData.length; m++) {
+    let inputData = [];
+    for (let m = 0; m < trainData.length; m++) {
       // ラベル部分を除外したもの
-      var dataPart = [];
-      for (var n = 1; n < trainData[m].length; n++) {
+      let dataPart = [];
+      for (let n = 1; n < trainData[m].length; n++) {
         dataPart.push(Number(trainData[m][n]));
       } 
       // DNN に渡すデータに追加
@@ -92,7 +92,7 @@ for (var i = 0; i < allDataSets.length; i++) {
     dnn.train(inputData);
  
     // 1 学習後のネットワークに対して入力データによる誤差関数の値を取得
-    var result = dnn.test(inputData);
+    let result = dnn.test(inputData);
  
     // 誤差関数の値が 0.01 未満であれば break
     if (result < 0.01) {
@@ -101,19 +101,19 @@ for (var i = 0; i < allDataSets.length; i++) {
   }
  
   // 正解数
-  var corrects = 0;
+  let corrects = 0;
  
   // テストデータをループしてテスト
-  for (var o = 0; o < testData.length; o++) {
+  for (let o = 0; o < testData.length; o++) {
  
     // ラベル以外の部分
-    var dataPart = [];
-    for (var p = 1; p < testData[o].length; p++) {
+    let dataPart = [];
+    for (let p = 1; p < testData[o].length; p++) {
       dataPart.push(Number(testData[o][p]));
     }
  
     // 判定
-    var result = dnn.predict(dataPart);
+    let result = dnn.predict(dataPart);
  
     // best には最も値の高かったラベルが入っています。
     if (result['best'] == Number(testData[o][0])) {
