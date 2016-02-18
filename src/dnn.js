@@ -1,6 +1,9 @@
 import Unit, { UnitType } from './unit';
 import Connection from './connection';
-import { rnorm, getMeanAndSD, randomChoice } from './util';
+import {
+  rnorm, getMeanAndSD,
+  randomChoice, normalize
+} from './util';
 
 export default class DNN {
   constructor({ numOfUnits, weights, means, sds }) {
@@ -130,7 +133,7 @@ export default class DNN {
     this.inputMeans = msd['means'];
     this.inputSDs = msd['sds'];
 
-    const data = dnnUtil.randomChoice(dataSet, this.miniBatchSize);
+    const data = randomChoice(dataSet, this.miniBatchSize);
 
     for (let n = 0; n < data.length; n++) {
       this.predict(data[n]['data']);
@@ -207,7 +210,7 @@ export default class DNN {
   predict(dataSet) {
     let denom = 0;
     let denomArray = [];
-    const data = dnnUtil.normalize(
+    const data = normalize(
       dataSet,
       this.inputMeans,
       this.inputSDs

@@ -63,3 +63,11 @@ export function getMeanAndSD(dataSet) {
   }
   return {means: means, sds: sds};
 }
+
+export function normalize(dataAry, mean, sd) {
+  let newAry = [];
+  for (let i = 0; i < dataAry.length; i++) {
+    newAry.push((dataAry[i] - mean[i]) / sd[i]);
+  }
+  return newAry;
+}
