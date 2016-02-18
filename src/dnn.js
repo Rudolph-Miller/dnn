@@ -203,4 +203,72 @@ export default class DNN {
     const avg_e = e / data.length;
     return avg_e;
   }
+
+  predict(dataSet) {
+    let denom = 0;
+    let denomArray = [];
+    const data = dnnUtil.normalize(
+      dataSet,
+      this.inputMeans,
+      this.inputSDs
+    );
+
+    let g = 0;
+    for (let h = 0; h < this.units[0].length; h++) {
+      if (this.units[0][h].getUnitType() != UnitType.BIAS) {
+        this.units[0][h].setInput(data[g]);
+        this.units[0][h].setOutput(data[g]);
+        g++;
+      }
+    }
+
+    for (let i = 1; i < this.units.length; i++) {
+      for (let j = 0; j < this.units[i].length; j++) {
+        const unit = this.units[i][j];
+
+        if (unit.getUnitType() === UnitType.HIDDEN ||
+            unit.getUnitType() === UnitType.OUTPUT) {
+          let sum = 0;
+          const connArray = unit.getLeftConnections();
+          for (let k = 0; k < connArray.length; k++) {
+            const conn = connArray[k];
+
+            sum += conn.getLeftUnit().getOutput() * conn.getWeight();
+          }
+          unit.setInput(sum);
+
+          if (unit.getUnitType() === UnitType.OUTPUT) {
+            const ex = Math.exp(unit.getInput());
+            denom += ex;
+            denomArray.push(ex);
+          } else {
+            if (unit.getInput() < 0) {
+              unit.setOutput(0);
+            } else {
+              unit.setOutput(unit.getInput());
+            }
+          }
+        }
+      }
+    }
+
+    let result = [];
+    const outputUnits = this.units[this.numOfUnits.length - 1];
+    for (let p = 0; p < denomArray.length; p++) {
+      let res = denomArray[p] / denom;
+      result.push(res);
+      outputUnits[p].setOutput(res);
+    }
+
+    let best = -1;
+    let idx = -1;
+    for (var q = 0; q < result.length; q++) {
+      if (best < result[q]) {
+        best = result[q];
+        idx = q;
+      }
+    }
+
+    return {best:idx, result:result};
+  }
 }
