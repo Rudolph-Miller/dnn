@@ -8,10 +8,10 @@ import {
 export default class DNN {
   constructor({ numOfUnits, weights, means, sds }) {
     if(!numOfUnits) {
-      throw new Error("numOfUnits must be specified.");
+      throw new Error('numOfUnits must be specified.');
     }
     if(numOfUnits.length <= 2) {
-      throw new Error("At least 1 hidden units must be specified.");
+      throw new Error('At least 1 hidden units must be specified.');
     }
 
     this.DEFAULT_WEIGHT = 0;

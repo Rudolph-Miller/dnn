@@ -1,7 +1,7 @@
 import DNN from './dnn';
 import fs from 'fs';
 
-const dataFile = "src/data.text"
+const dataFile = 'src/data.text'
 
 // 下記のネットワーク構成とします。
 // 入力層: 4 ユニット
@@ -16,7 +16,7 @@ dnn.setLearningCoefficient(0.001);
 var data = fs.readFileSync(dataFile, 'utf-8');
  
 // 改行で split します。データセットの取得先によって変わるかも。
-var lines = data.split("\n");
+var lines = data.split('\n');
 
 // 10-fold cross validation を行います。
 // 1 分割あたりのデータ数を計算
@@ -38,7 +38,7 @@ while (1) {
     if (i > lines.length - 1) {
       break;
     }
-    var ary = lines[i].split("\s");
+    var ary = lines[i].split(' ');
     dataSets.push(ary);
     i++;
   }
@@ -126,4 +126,4 @@ for (var i = 0; i < allDataSets.length; i++) {
 }
  
 // 全ループによる精度の平均値を出力
-console.log("accuracy: " + (accuracySum / allDataSets.length) + "%");
+console.log('accuracy: ' + (accuracySum / allDataSets.length) + '%');
