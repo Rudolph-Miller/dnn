@@ -1,6 +1,6 @@
 import Unit, { UnitType } from './unit';
 import Connection from './connection';
-import { rnorm, getMeanAndSD } from './util';
+import { rnorm, getMeanAndSD, randomChoice } from './util';
 
 export default class DNN {
   constructor({ numOfUnits, weights, means, sds }) {
@@ -182,5 +182,25 @@ export default class DNN {
         }
       }
     }
+  }
+
+  test(dataSet) {
+    let e = 0;
+    const data = randomChoice(dataSet, this.miniBatchSize);
+
+    for (let n = 0; n < data.length; n++) {
+      this.predict(data[n]['data']);
+      const outputUnits = this.units[this.numOfUnits.length - 1];
+      let sum = 0;
+
+      for (let i = 0; i < outputUnits.length; i++) {
+        if (data[n]['expected'] == i) {
+          sum += Math.log(outputUnits[i].getOutput());
+        }
+      }
+      e += -1 * sum;
+    }
+    const avg_e = e / data.length;
+    return avg_e;
   }
 }
