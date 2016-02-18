@@ -1,6 +1,6 @@
 import Unit, { UnitType } from './unit';
 import Connection from './connection';
-import { rnorm } from './util';
+import { rnorm, getMeanAndSD } from './util';
 
 export default class DNN {
   constructor({ numOfUnits, weights, means, sds }) {
@@ -123,5 +123,64 @@ export default class DNN {
       means:this.inputMeans,
       sds:this.inputSDs
     };
+  }
+
+ train(dataSet) {
+    const msd = getMeanAndSD(dataSet);
+    this.inputMeans = msd['means'];
+    this.inputSDs = msd['sds'];
+
+    const data = dnnUtil.randomChoice(dataSet, this.miniBatchSize);
+
+    for (let n = 0; n < data.length; n++) {
+      this.predict(data[n]['data']);
+
+      for (let k = this.numOfUnits.length - 1; k > 0; k--) {
+        for (let l = 0; l < this.units[k].length; l++) {
+          const unit = this.units[k][l];
+          let delta = 0;
+
+          if (unit.getUnitType() === UnitType.OUTPUT ||
+              unit.getUnitType() === UnitType.HIDDEN) {
+            if (unit.getUnitType() === UnitType.OUTPUT) {
+              delta = unit.getOutput();
+              if (data[n]['expected'] == l) {
+                delta -= 1;
+              }
+            } else {
+              const inputValue = unit.getInput();
+              const rightConns = unit.getRightConnections();
+              for (let m = 0; m < rightConns.length; m++) {
+                delta += rightConns[m].getRightUnit().getDelta() *
+                         rightConns[m].getWeight() *
+                         ((inputValue < 0) ? 0 : 1);
+              }
+            }
+            unit.setDelta(delta);
+
+            const conns = unit.getLeftConnections();
+            for (let p = 0; p < conns.length; p++) {
+              let diff = conns[p].getWeightDiff(); 
+
+              diff += delta * conns[p].getLeftUnit().getOutput();
+              conns[p].setWeightDiff(diff);
+            }
+          }
+        }
+      }
+
+      for (let q = 0; q < this.connections.length; q++) {
+        for (let r = 0; r < this.connections[q].length; r++) {
+          for (let s = 0; s < this.connections[q][r].length; s++) {
+            const conn = this.connections[q][r][s];
+            let weight = conn.getWeight();
+            weight -= this.learningCoefficient * conn.getWeightDiff();
+
+            conn.setWeight(weight);
+            conn.setWeightDiff(0);
+          }
+        }
+      }
+    }
   }
 }
