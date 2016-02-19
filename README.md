@@ -1,5 +1,7 @@
 # DNN
 
+Example implementation of Feed Forward Neural Network.
+
 # Usage
 
 ```
