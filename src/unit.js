@@ -28,7 +28,7 @@ export default class Unit {
   setLeftConnections(connections) {
     switch(this.unitType) {
       case UnitType.HIDDEN:
-      case  UnitType.OUTPUT:
+      case UnitType.OUTPUT:
         this.leftConnections = connections;
         break;
       default:
