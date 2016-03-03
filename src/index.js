@@ -3,31 +3,11 @@ import fs from 'fs';
 
 const dataFile = 'src/data.txt'
 
-// 下記のネットワーク構成とします。
-// 入力層: 4 ユニット
-// 中間層: 4, 4 ユニット
-// 出力層: 3 ユニット
-const dnn = new DNN({numOfUnits:[4, 4, 4, 3]});
-
-// 学習係数の設定
-dnn.setLearningCoefficient(0.001);
-
-// 学習データを読み込みます。
 const data = fs.readFileSync(dataFile, 'utf-8');
- 
-// 改行で split します。データセットの取得先によって変わるかも。
 const lines = data.split('\n');
-
-// 10-fold cross validation を行います。
-// 1 分割あたりのデータ数を計算
 const size = Math.floor(lines.length / 10);
-
-// 全てのデータセット
 let allDataSets = [];
 let i = 0;
- 
-// 精度計算用
-let accuracySum = 0;
 // ループ
 while (1) {
   // データセット
@@ -52,6 +32,13 @@ while (1) {
   } 
 }
  
+const start = new Date();
+
+const dnn = new DNN({numOfUnits:[4, 4, 4, 3]});
+dnn.setLearningCoefficient(0.001);
+
+let accuracySum = 0;
+
 // 全データセット分ループ
 for (let i = 0; i < allDataSets.length; i++) {
  
@@ -127,3 +114,4 @@ for (let i = 0; i < allDataSets.length; i++) {
  
 // 全ループによる精度の平均値を出力
 console.log('accuracy: ' + (accuracySum / allDataSets.length) + '%');
+console.log('time: ' + (new Date() - start) + 'ms');
