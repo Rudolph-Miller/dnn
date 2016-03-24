@@ -1,6 +1,6 @@
 # DNN
 
-Example implementation of Feed Forward Neural Network.
+Example implementation of Feed Forward Multilayer Neural Network.
 
 # Usage
 
